@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart TLSO Clinician Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Login Page -->
+    <div id="loginPage" class="page active">
+        <div class="login-container">
+            <div class="login-box">
+                <div class="login-header">
+                    <h1>Smart TLSO</h1>
+                    <p>Clinician Dashboard</p>
+                </div>
+                <form id="loginForm" class="login-form">
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <input type="text" id="username" class="form-control" placeholder="Enter username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" class="form-control" placeholder="Enter password" required>
+                    </div>
+                    <div class="form-group-check">
+                        <input type="checkbox" id="remember">
+                        <label for="remember">Remember me</label>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-full">Sign In</button>
+                    <a href="#" class="forgot-link">Forgot password?</a>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Dashboard -->
+    <div id="dashboardPage" class="page">
+        <nav class="navbar">
+            <div class="nav-brand">Smart TLSO Dashboard</div>
+            <div class="nav-menu" id="navMenu">
+                <a href="#" class="nav-link active" data-page="dashboard">Dashboard</a>
+                <a href="#" class="nav-link" data-page="patients">Patients</a>
+                <a href="#" class="nav-link" data-page="devices">Devices</a>
+                <a href="#" class="nav-link" data-page="settings">Settings</a>
+                <a href="#" class="nav-link" id="logoutBtn">Logout</a>
+            </div>
+            <button class="nav-toggle" id="navToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </nav>
+
+        <div class="main-content">
+            <div class="welcome-header">
+                <h2>Welcome, Dr. Sarah Johnson</h2>
+                <p class="text-muted">Here's what's happening with your patients today</p>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: #3b82f6;">👥</div>
+                    <div class="stat-info">
+                        <h3 id="totalPatients">0</h3>
+                        <p>Total Patients</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: #ef4444;">⚠️</div>
+                    <div class="stat-info">
+                        <h3 id="patientsWithAlerts">0</h3>
+                        <p>Patients with Alerts</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: #10b981;">📊</div>
+                    <div class="stat-info">
+                        <h3 id="avgCompliance">0%</h3>
+                        <p>Avg Compliance Rate</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: #60a5fa;">📱</div>
+                    <div class="stat-info">
+                        <h3 id="devicesConnected">0</h3>
+                        <p>Devices Connected</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Recent Alerts</h3>
+                    </div>
+                    <div class="card-body">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Patient Name</th>
+                                    <th>Alert Type</th>
+                                    <th>Severity</th>
+                                    <th>Time</th>
+                                </tr>
+                            </thead>
+                            <tbody id="alertsTable">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Patient Overview</h3>
+                        <button class="btn btn-primary btn-sm" id="addPatientBtn">+ Add New Patient</button>
+                    </div>
+                    <div class="card-body">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Age</th>
+                                    <th>Status</th>
+                                    <th>Compliance</th>
+                                    <th>Last Sync</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="patientsOverviewTable">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Patient List Page -->
+    <div id="patientsPage" class="page">
+        <nav class="navbar">
+            <div class="nav-brand">Smart TLSO Dashboard</div>
+            <div class="nav-menu">
+                <a href="#" class="nav-link" data-page="dashboard">Dashboard</a>
+                <a href="#" class="nav-link active" data-page="patients">Patients</a>
+                <a href="#" class="nav-link" data-page="devices">Devices</a>
+                <a href="#" class="nav-link" data-page="settings">Settings</a>
+                <a href="#" class="nav-link" id="logoutBtn2">Logout</a>
+            </div>
+            <button class="nav-toggle" id="navToggle2">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </nav>
+
+        <div class="main-content">
+            <div class="page-header">
+                <h2>Patient List</h2>
+                <button class="btn btn-primary" id="addPatientBtn2">+ Add New Patient</button>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <div class="filter-bar">
+                        <input type="text" id="patientSearch" class="search-input" placeholder="Search patients...">
+                        <div class="filter-buttons">
+                            <button class="btn btn-filter active" data-filter="all">All</button>
+                            <button class="btn btn-filter" data-filter="good">Active</button>
+                            <button class="btn btn-filter" data-filter="warning">At Risk</button>
+                            <button class="btn btn-filter" data-filter="alert">Inactive</button>
+                        </div>
+                    </div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Age</th>
+                                <th>Condition</th>
+                                <th>Compliance %</th>
+                                <th>Status</th>
+                                <th>Last Sync</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="patientListTable">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Patient Detail Page -->
+    <div id="patientDetailPage" class="page">
+        <nav class="navbar">
+            <div class="nav-brand">Smart TLSO Dashboard</div>
+            <div class="nav-menu">
+                <a href="#" class="nav-link" data-page="dashboard">Dashboard</a>
+                <a href="#" class="nav-link" data-page="patients">Patients</a>
+                <a href="#" class="nav-link" data-page="devices">Devices</a>
+                <a href="#" class="nav-link" data-page="settings">Settings</a>
+                <a href="#" class="nav-link" id="logoutBtn3">Logout</a>
+            </div>
+            <button class="nav-toggle" id="navToggle3">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </nav>
+
+        <div class="main-content">
+            <div class="page-header">
+                <button class="btn btn-secondary" id="backToPatients">← Back to Patients</button>
+            </div>
+
+            <div class="patient-header-card">
+                <div class="patient-info">
+                    <h2 id="patientDetailName">Patient Name</h2>
+                    <div class="patient-meta">
+                        <span id="patientDetailAge">Age: --</span>
+                        <span id="patientDetailCondition">Condition: --</span>
+                        <span id="patientDetailEnrollment">Enrolled: January 15, 2025</span>
+                    </div>
+                </div>
+                <button class="btn btn-primary" id="editPatientBtn">Edit Patient</button>
+            </div>
+
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="overview">Overview</button>
+                <button class="tab-btn" data-tab="posture">Posture Data</button>
+                <button class="tab-btn" data-tab="pressure">Pressure Data</button>
+                <button class="tab-btn" data-tab="compliance">Compliance</button>
+                <button class="tab-btn" data-tab="device">Device</button>
+                <button class="tab-btn" data-tab="notes">Notes</button>
+            </div>
+
+            <div id="overviewTab" class="tab-content active">
+                <div class="content-grid">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Current Status</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="gauge-grid">
+                                <div class="gauge-item">
+                                    <canvas id="postureGauge"></canvas>
+                                    <p>Posture Angle</p>
+                                </div>
+                                <div class="gauge-item">
+                                    <canvas id="pressureGauge"></canvas>
+                                    <p>Pressure</p>
+                                </div>
+                                <div class="gauge-item">
+                                    <canvas id="temperatureGauge"></canvas>
+                                    <p>Temperature</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Weekly Compliance</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="chart-container">
+                                <canvas id="weeklyComplianceChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Data Visualization (Last 7 Days)</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="charts-grid">
+                            <div class="chart-container">
+                                <h4>Posture Angle Over Time</h4>
+                                <canvas id="postureLineChart"></canvas>
+                            </div>
+                            <div class="chart-container">
+                                <h4>Pressure Readings Over Time</h4>
+                                <canvas id="pressureLineChart"></canvas>
+                            </div>
+                            <div class="chart-container">
+                                <h4>Daily Wear Hours</h4>
+                                <canvas id="wearHoursChart"></canvas>
+                            </div>
+                            <div class="chart-container">
+                                <h4>Temperature Monitoring</h4>
+                                <canvas id="temperatureLineChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Physician Notes</h3>
+                    </div>
+                    <div class="card-body">
+                        <textarea id="physicianNotes" class="notes-textarea" placeholder="Add clinical observations..."></textarea>
+                        <button class="btn btn-primary" id="saveNotesBtn">Save Notes</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="postureTab" class="tab-content">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Posture Data Analysis</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container-large">
+                            <canvas id="postureDetailChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="pressureTab" class="tab-content">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Pressure Data Analysis</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container-large">
+                            <canvas id="pressureDetailChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="complianceTab" class="tab-content">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Compliance History</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container-large">
+                            <canvas id="complianceDetailChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="deviceTab" class="tab-content">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Device Information</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="device-info-grid">
+                            <div class="info-item">
+                                <label>Device ID:</label>
+                                <span id="deviceId">DEV001</span>
+                            </div>
+                            <div class="info-item">
+                                <label>MAC Address:</label>
+                                <span>AA:BB:CC:DD:EE:FF</span>
+                            </div>
+                            <div class="info-item">
+                                <label>Firmware Version:</label>
+                                <span>v2.3.1</span>
+                            </div>
+                            <div class="info-item">
+                                <label>Battery Level:</label>
+                                <span id="deviceBattery">85%</span>
+                            </div>
+                            <div class="info-item">
+                                <label>Last Sync:</label>
+                                <span id="deviceLastSync">2 hours ago</span>
+                            </div>
+                            <div class="info-item">
+                                <label>Calibration Date:</label>
+                                <span>October 28, 2025</span>
+                            </div>
+                        </div>
+                        <div class="device-actions">
+                            <button class="btn btn-primary">Recalibrate Device</button>
+                            <button class="btn btn-secondary">Sync Now</button>
+                            <button class="btn btn-danger">Disconnect Device</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="notesTab" class="tab-content">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Clinical Notes History</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="notes-history">
+                            <div class="note-entry">
+                                <div class="note-header">
+                                    <strong>Dr. Sarah Johnson</strong>
+                                    <span class="note-date">November 3, 2025</span>
+                                </div>
+                                <p>Patient showing good progress. Posture angle improving steadily. Continue current treatment plan.</p>
+                            </div>
+                            <div class="note-entry">
+                                <div class="note-header">
+                                    <strong>Dr. Sarah Johnson</strong>
+                                    <span class="note-date">October 27, 2025</span>
+                                </div>
+                                <p>Initial assessment completed. Device fitted and calibrated. Patient instructed on proper usage.</p>
+                            </div>
+                        </div>
+                        <div class="add-note">
+                            <h4>Add New Note</h4>
+                            <textarea class="notes-textarea" id="newNote" placeholder="Enter clinical observation..."></textarea>
+                            <button class="btn btn-primary" id="addNoteBtn">Add Note</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Devices Page -->
+    <div id="devicesPage" class="page">
+        <nav class="navbar">
+            <div class="nav-brand">Smart TLSO Dashboard</div>
+            <div class="nav-menu">
+                <a href="#" class="nav-link" data-page="dashboard">Dashboard</a>
+                <a href="#" class="nav-link" data-page="patients">Patients</a>
+                <a href="#" class="nav-link active" data-page="devices">Devices</a>
+                <a href="#" class="nav-link" data-page="settings">Settings</a>
+                <a href="#" class="nav-link" id="logoutBtn4">Logout</a>
+            </div>
+            <button class="nav-toggle" id="navToggle4">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </nav>
+
+        <div class="main-content">
+            <div class="page-header">
+                <h2>Device Management</h2>
+                <button class="btn btn-primary" id="pairDeviceBtn">+ Pair New Device</button>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h3>Connected Devices</h3>
+                </div>
+                <div class="card-body">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Device ID</th>
+                                <th>Patient Name</th>
+                                <th>Status</th>
+                                <th>Battery</th>
+                                <th>Last Sync</th>
+                                <th>Firmware</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="devicesTable">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Page -->
+    <div id="settingsPage" class="page">
+        <nav class="navbar">
+            <div class="nav-brand">Smart TLSO Dashboard</div>
+            <div class="nav-menu">
+                <a href="#" class="nav-link" data-page="dashboard">Dashboard</a>
+                <a href="#" class="nav-link" data-page="patients">Patients</a>
+                <a href="#" class="nav-link" data-page="devices">Devices</a>
+                <a href="#" class="nav-link active" data-page="settings">Settings</a>
+                <a href="#" class="nav-link" id="logoutBtn5">Logout</a>
+            </div>
+            <button class="nav-toggle" id="navToggle5">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </nav>
+
+        <div class="main-content">
+            <div class="page-header">
+                <h2>Settings</h2>
+            </div>
+
+            <div class="settings-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>System Settings</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label>Alert Threshold (hours)</label>
+                            <input type="number" class="form-control" value="24">
+                        </div>
+                        <div class="form-group">
+                            <label>Minimum Daily Wear Hours</label>
+                            <input type="number" class="form-control" value="8">
+                        </div>
+                        <div class="form-group">
+                            <label>Maximum Pressure Limit (mmHg)</label>
+                            <input type="number" class="form-control" value="15">
+                        </div>
+                        <div class="form-group">
+                            <label>Maximum Temperature Limit (°C)</label>
+                            <input type="number" class="form-control" value="38">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Clinician Profile</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label>Full Name</label>
+                            <input type="text" class="form-control" value="Dr. Sarah Johnson">
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" class="form-control" value="sarah.johnson@hospital.com">
+                        </div>
+                        <div class="form-group">
+                            <label>Specialty</label>
+                            <input type="text" class="form-control" value="Orthopedics">
+                        </div>
+                        <div class="form-group">
+                            <label>Clinic</label>
+                            <input type="text" class="form-control" value="City General Hospital">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Notification Preferences</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="checkbox-group">
+                            <label>
+                                <input type="checkbox" checked>
+                                <span>Email notifications</span>
+                            </label>
+                            <label>
+                                <input type="checkbox" checked>
+                                <span>SMS notifications</span>
+                            </label>
+                            <label>
+                                <input type="checkbox">
+                                <span>Push notifications</span>
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>Alert Types</label>
+                            <div class="checkbox-group">
+                                <label>
+                                    <input type="checkbox" checked>
+                                    <span>Low compliance alerts</span>
+                                </label>
+                                <label>
+                                    <input type="checkbox" checked>
+                                    <span>Device offline alerts</span>
+                                </label>
+                                <label>
+                                    <input type="checkbox" checked>
+                                    <span>High temperature alerts</span>
+                                </label>
+                                <label>
+                                    <input type="checkbox">
+                                    <span>Battery low alerts</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="settings-actions">
+                <button class="btn btn-primary" id="saveSettingsBtn">Save Changes</button>
+                <button class="btn btn-secondary">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
